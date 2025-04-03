@@ -1,15 +1,3 @@
-/*
- * CS-252
- * shell.y: parser for shell
- *
- * This parser compiles the following grammar:
- *
- *   cmd [arg]* [ | cmd [arg]* ]* [ [> filename] [>> filename] [< filename]
- *   [2> filename] [>& filename] [>>& filename] ]* [&]
- *
- * The parsed command is stored in the Shell::_currentCommand (of type Command)
- * which uses the Command data structure defined in command.hh.
- */
 
 %code requires {
   #include <string>
@@ -43,7 +31,8 @@ void yyerror(const char * s);
 int yylex();
 void expandWildCardsIfNecessary(char * arg);
 void expandWildCards(char * prefix, char * arg);
-int cmpfunc(const void * file1, const void * file2);
+int cmp(const void * file1, const void * file2);
+char* generateRegexForWildcard(char *dir);
 
 
 %}
@@ -165,13 +154,29 @@ background_optional:
 
 
 int maxEntries = 20;
-int nEntries = 0;
+int count = 0;
 char **entries;
 
-int cmpfunc(const void *file1, const void *file2) {
+int cmp(const void *file1, const void *file2) {
     const char *_file1 = *(const char **)file1;
     const char *_file2 = *(const char **)file2;
     return strcmp(_file1, _file2);
+}
+
+char* generateRegexForWildcard(char *dir) {
+    char *reg = (char *)malloc(2 * strlen(dir) + 10);
+    char *a = dir;
+    char *r = reg;
+    *(r++) = '^';
+    while (*a) {
+        if (*a == '*') { *(r++) = '.'; *(r++) = '*'; }
+        else if (*a == '?') { *(r++) = '.'; }
+        else if (*a == '.') { *(r++) = '\\'; *(r++) = '.'; }
+        else { *(r++) = *a; }
+        a++;
+    }
+    *(r++) = '$'; *r = '\0';
+    return reg;
 }
 
 void expandWildCards(char *prefix, char *arg) {
@@ -190,29 +195,21 @@ char *dir = save;
             dir++;
         }
 
-        char *reg = (char *)malloc(2 * strlen(arg) + 10);
-        char *a = dir;
-        char *r = reg;
-        *(r++) = '^';
-        while (*a) {
-            if (*a == '*') { *(r++) = '.'; *(r++) = '*'; }
-            else if (*a == '?') { *(r++) = '.'; }
-            else if (*a == '.') { *(r++) = '\\'; *(r++) = '.'; }
-            else { *(r++) = *a; }
-            a++;
-        }
-        *(r++) = '$'; *r = '\0';
+
+        char *reg = generateRegexForWildcard(dir);
+        char *toOpen = strdup((prefix) ? prefix : ".");
+        
 
         regex_t re;
         int expbuf = regcomp(&re, reg, REG_EXTENDED | REG_NOSUB);
-        char *toOpen = strdup((prefix) ? prefix : ".");
         DIR *d = opendir(toOpen);
         if (d == NULL) {
             free(toOpen);
             free(reg);
-            free(save);  // ✅ clean up before return
+            free(save);  
             return;
         }
+        
 
         struct dirent *ent;
         regmatch_t match;
@@ -228,7 +225,7 @@ char *dir = save;
                         free(nPrefix);
                     }
                 } else {
-                    if (nEntries == maxEntries) {
+                    if (count == maxEntries) {
                         maxEntries *= 2;
                         entries = (char **)realloc(entries, maxEntries * sizeof(char *));
                     }
@@ -237,7 +234,7 @@ char *dir = save;
                     if (prefix) sprintf(argument, "%s/%s", prefix, ent->d_name);
                     // If pattern starts with '.', include everything (including . and ..)
 if (dir[0] == '.') {
-    entries[nEntries++] = (argument[0] != '\0') ? strdup(argument) : strdup(ent->d_name);
+    entries[count++] = (argument[0] != '\0') ? strdup(argument) : strdup(ent->d_name);
 }
 // If not, skip hidden files (including . and ..)
 else {
@@ -245,12 +242,9 @@ else {
       free(argument);
         continue;
     }
-    entries[nEntries++] = (argument[0] != '\0') ? strdup(argument) : strdup(ent->d_name);
+    entries[count++] = (argument[0] != '\0') ? strdup(argument) : strdup(ent->d_name);
 }
 free(argument);  
-
-
-
 
 
                 }
@@ -273,7 +267,7 @@ free(argument);
 
 void expandWildCardsIfNecessary(char *arg) {
     maxEntries = 20;
-    nEntries = 0;
+    count = 0;
     entries = (char **)malloc(maxEntries * sizeof(char *));
 
     // Check if arg contains wildcards
@@ -281,23 +275,23 @@ void expandWildCardsIfNecessary(char *arg) {
         !(strncmp(arg, "$", 1) == 0 || strstr(arg, "${") != nullptr)) {
         
         expandWildCards(NULL, arg);
-        qsort(entries, nEntries, sizeof(char *), cmpfunc);
+        qsort(entries, count, sizeof(char *), cmp);
 
-        if (nEntries > 0) {
-            for (int i = 0; i < nEntries; i++) {
+        if (count > 0) {
+            for (int i = 0; i < count; i++) {
                 Command::_currentSimpleCommand->insertArgument(new std::string(entries[i]));
             }
         }else {
-    // No match: insert original arg literally (Bash fallback behavior)
+
     Command::_currentSimpleCommand->insertArgument(new std::string(arg));
 }
 
     } else {
-        // No wildcard — insert literally
+
         Command::_currentSimpleCommand->insertArgument(new std::string(arg));
     }
-    for (int i = 0; i < nEntries; i++) {
-        free(entries[i]);     // ✅ ADD THIS LOOP TO FREE EACH ENTRY
+    for (int i = 0; i < count; i++) {
+        free(entries[i]);   
     }
     free(entries); 
 }
@@ -305,4 +299,4 @@ void expandWildCardsIfNecessary(char *arg) {
 
 void yyerror(const char * s) {
   fprintf(stderr, "%s", s);
-}           
+} 
