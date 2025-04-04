@@ -55,11 +55,6 @@ This project focuses on building a custom shell interpreter, incorporating behav
 - **Customizable Prompt**: Introduced the `PROMPT` environment variable, allowing users to customize the shell prompt. If `ON_ERROR` is set, it displays the custom error message when a command fails.
 - **Error Handling Prompt**: Displayed error messages based on the `ON_ERROR` environment variable for better user feedback when a command fails.
 
-### Testing and Submission
-1. **Build the Shell**: Compile the shell using `make` and ensure all components work as expected.
-2. **Run Tests**: Verify the shell passes the provided tests and additional edge cases, ensuring the robustness of the implementation.
-3. **Submit**: Tag the final implementation with `git tag -f partX` and push the changes to the repository following the submission instructions.
-
 ### Manual Testing Criteria
 - **Line Editor Commands**: Verified all line editor functionalities, such as moving the cursor, deleting characters, and navigating command history.
 - **Wildcard Expansion**: Tested wildcard expansion in various scenarios (wildcards in file/directory names).
