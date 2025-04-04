@@ -1,9 +1,4 @@
-/*
- * CS252: Systems Programming
- * Purdue University
- * Example that shows how to read one line with simple editing
- * using raw terminal.
- */
+
 
  #define _GNU_SOURCE
  #include <stdlib.h>
