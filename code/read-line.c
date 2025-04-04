@@ -265,9 +265,7 @@ int complete_path(char *line_buffer, int *line_length, int *cursor_pos, int list
      }
      else if (ch == 27) {
        // Escape sequence. Read two chars more
-       //
-       // HINT: Use the program "keyboard-example" to
-       // see the ascii code for the different chars typed.
+     
        //
        char ch1;
        char ch2;
