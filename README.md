@@ -1,123 +1,125 @@
-# 🚀 Full-Stack Interactive Unix Command Tool
+# Full-Stack Interactive Unix Command Tool
 
-Welcome to my handcrafted **Unix shell**! It's a deep dive into **systems programming**, designed to simulate how real-world shells like `bash` and `csh` work under the hood.
-
----
-
-## 🐚 What’s a Shell, Anyway?
-
-A **shell** is the magical translator between you and your computer. It takes what you type, interprets it, and tells your system what to do — whether that’s running a program, moving files, or managing processes. Think of it as the terminal’s brain 🧠.
-
-This project reimagines that brain — building core shell features from the ground up, then enhancing them with **interactive behaviors** like command history, environment variable expansion, wildcards, and even autocompletion.
+Welcome to my handcrafted **Unix shell**, a deep dive into **systems programming** that simulates how real-world shells like `bash` and `csh` operate under the hood.
 
 ---
 
-## ✨ Features Implemented
+## What’s a Shell?
 
-### 🧠 1. Command Parsing & Execution
-- Built a **custom shell grammar** using **Flex and Bison (Lex & Yacc)**.
-- Executed commands with `fork()` and `execvp()`.
-- Supported **input/output redirection** (`>`, `<`, `2>`, `>>`, `>>&`) using `dup2()`.
-- Enabled **piping** (`|`) between commands.
+A **shell** is a command-line interface between users and the operating system. It interprets user commands and delegates tasks to the system, such as executing programs, managing files, and handling processes.
 
-💡 *Skills:* IPC, process management, parsing logic, redirection, grammar construction.
+This project reimagines that core functionality — building shell features from scratch and enhancing them with **interactive capabilities**, including command history, environment variable expansion, wildcard matching, and autocompletion.
 
 ---
 
-### 🔔 2. Signal Handling
-- **Ctrl+C** (`SIGINT`) gracefully interrupts commands.
-- **Zombie cleanup** via `SIGCHLD` and `waitpid()` ensures no dangling processes.
+## Features Implemented
 
-💡 *Skills:* Signal control, async process handling, system-level interrupts.
+### 1. Command Parsing & Execution
+- Built a custom shell grammar using **Flex and Bison (Lex & Yacc)**.
+- Executed commands via `fork()` and `execvp()`.
+- Supported input/output redirection (`>`, `<`, `2>`, `>>`, `>>&`) using `dup2()`.
+- Implemented piping (`|`) for inter-process communication.
+
+**Skills Applied:** IPC, process control, parsing, file descriptor manipulation.
 
 ---
 
-### 🔧 3. Built-in Commands
+### 2. Signal Handling
+- Implemented graceful interruption via `SIGINT` (Ctrl+C).
+- Cleaned up zombie processes using `SIGCHLD` and `waitpid()`.
+
+**Skills Applied:** Signal handling, asynchronous processing.
+
+---
+
+### 3. Built-in Commands
 - Implemented `cd`, `exit`, `printenv`, `setenv`, and `unsetenv`.
-- Controlled directory navigation and environment settings.
+- Enabled environment manipulation and directory navigation.
 
-💡 *Skills:* Shell logic, string and environment handling, memory cleanup.
+**Skills Applied:** String handling, shell state management, memory safety.
 
 ---
 
-### 💬 4. Environment Variable Expansion
+### 4. Environment Variable Expansion
 - Supports `${VAR}`, `${$}`, `${?}`, `${!}`, `${_}`.
-- Handled **dynamic runtime values** for smarter commands.
+- Dynamically substitutes variables during runtime.
 
-💡 *Skills:* String manipulation, shell scripting behavior, system introspection.
-
----
-
-### 🌟 5. Wildcard Expansion
-- Implemented `*` and `?` using regex and file system traversal.
-- Seamlessly integrates with user input for flexible command support.
-
-💡 *Skills:* Regex, `opendir()`/`readdir()`, file matching.
+**Skills Applied:** String parsing, runtime state tracking.
 
 ---
 
-### 🎯 6. Line Editing
-- Wrote a **custom line editor** in raw terminal mode.
-- Supported cursor movement, backspace/delete, and home/end.
-- Navigated command history with ⬆️ / ⬇️ keys.
+### 5. Wildcard Expansion
+- Supports `*` and `?` for filename pattern matching.
+- Uses regex and filesystem traversal (`opendir()`/`readdir()`).
 
-💡 *Skills:* Terminal I/O, raw input control, interactive UI building.
-
----
-
-### ⌨️ 7. Path Completion
-- Autocompletion with `<tab>`, like in `bash`.
-- Dynamically lists matching file paths.
-
-💡 *Skills:* Real-time input handling, file path resolution.
+**Skills Applied:** Regular expressions, file system programming.
 
 ---
 
-## ⚠️ Features Not Yet Implemented
-- **Process substitution** (e.g., `<(cmd)`) is in progress. It involves named pipes and deep I/O redirection logic — definitely on the roadmap!
+### 6. Line Editing
+- Wrote a custom line editor in raw terminal mode.
+- Supports cursor movement, backspace/delete, and home/end keys.
+- Enabled command history navigation with arrow keys.
+
+**Skills Applied:** Terminal control, user interaction design.
 
 ---
 
-## 💡 Extra Touches
-- ✨ **Custom Prompt**: Personalize with `$PROMPT`.
-- ❌ **On-Error Feedback**: Custom error messages via `ON_ERROR` when commands fail.
+### 7. Path Completion
+- Implemented autocompletion using the Tab key.
+- Dynamically completes file and directory paths.
+
+**Skills Applied:** Real-time input parsing, filesystem introspection.
 
 ---
 
-## ✅ Manual Testing Highlights
-- Verified all line editing actions (cursor moves, backspace, history).
-- Tested wildcard expansion under edge cases.
-- Path autocompletion under varied directory structures.
+## Features In Progress
+
+- **Process Substitution** (e.g., `<(cmd)`): Work in progress. Will use named pipes and advanced redirection handling.
 
 ---
 
-## 🛠️ Skills Demonstrated
+## Extra Touches
 
-| Domain                    | Skills Applied                                                             |
-|--------------------------|-----------------------------------------------------------------------------|
-| 💻 Systems Programming    | Fork/exec, signals, redirection, zombie handling                            |
-| 📜 Language Parsing       | Lex/Yacc grammar for robust command parsing                                 |
-| 🧠 Memory Management      | Manual `malloc`/`free`, Valgrind-tested memory safety                       |
-| 🎨 UI/CLI Design          | Usable interactive interface, autocompletion, navigation                    |
-| 🗂️ Filesystem Handling    | Regex-based matching, traversal, autocomplete                               |
+- **Custom Prompt:** Supports configuration via `$PROMPT`.
+- **Error Feedback:** Displays messages using `ON_ERROR` for failed commands.
 
 ---
 
-## 🔧 Tech Stack
+## Manual Testing
 
-- `C` — Core implementation
-- `Flex & Bison` — Command parsing
-- `Valgrind` — Memory leak checking
-- `Makefile` — Build automation
+- Verified all line editing functionality and cursor navigation.
+- Tested wildcard edge cases and autocompletion under nested directories.
 
 ---
 
-## 🎯 Final Thoughts
+## Skills Demonstrated
 
-Building this shell taught me more than just code — it taught me how a real system thinks. From process control to user-friendly interaction design, this project sharpened my skills across the board. It’s not just a tool; it’s a learning milestone I’m proud of.
-
-> “Why use someone else’s shell when you can build your own?” 😄
+| Domain                 | Skills Applied                                                         |
+|------------------------|------------------------------------------------------------------------|
+| Systems Programming    | Fork/exec, signals, redirection, zombie cleanup                        |
+| Language Parsing       | Command grammar via Lex/Yacc                                           |
+| Memory Management      | Manual `malloc`/`free`, Valgrind for leak checking                     |
+| CLI/UX Design          | Custom line editor, autocompletion, command history                    |
+| Filesystem Handling    | Directory traversal, regex-based matching                              |
 
 ---
 
-Feel free to explore, fork, or reach out if you have questions!
+## Tech Stack
+
+- **C** — Core implementation
+- **Flex & Bison** — Parsing logic
+- **Valgrind** — Memory safety validation
+- **Makefile** — Build automation
+
+---
+
+## Final Thoughts
+
+This shell project offered an immersive experience in systems-level thinking. From managing processes to creating a smooth command-line interface, each feature helped deepen my understanding of how operating systems work behind the scenes.
+
+> “Why use someone else’s shell when you can build your own?”
+
+---
+
+Feel free to explore the codebase or reach out with questions.
