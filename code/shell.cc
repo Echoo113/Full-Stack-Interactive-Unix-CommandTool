@@ -1,25 +1,3 @@
-/*#include <cstdio>
-
-#include "shell.hh"
-extern int yydebug;
-int yyparse(void);
-
-void Shell::prompt() {
-//  printf("myshell>");
-  fflush(stdout);
-}
-
-int main() {
-
-Shell::prompt();
-//  yydebug = 1;
-  yyparse();
-}
-
-Command Shell::_currentCommand;
-*/
-
-
 
 
 #include <cstdio>
