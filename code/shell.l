@@ -164,6 +164,7 @@ int mygetc(FILE * f) {
 }
 
 ([^ \t\n\\><&|"]|\\.)+ {
+	// Rule to match '\'
   std::string text = yytext;
   std::string result;
   for (size_t i = 0; i < text.size(); i++) {
