@@ -274,7 +274,7 @@ void Command::execute() {
     exit(1);
   }
 
-  // 2.6 handle built-in commands executed in the parent
+  //  handle built-in commands executed in the parent
   if (handleBuiltIn()) {
     clear();
     Shell::prompt();
