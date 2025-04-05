@@ -94,7 +94,7 @@ int mygetc(FILE * f) {
 }
 
 \$\([^\n]*\) {
-	/* 2.8: Subshell*/
+	/*Subshell*/
 	//get rid of dollar and parents
 	std::string raw = yytext;
 	std::string innerCommand = raw.substr(2, raw.length() - 3);
